@@ -29,7 +29,7 @@
 
   <script>
 
-    // item-list
+    // ITEM - LIST
     let arr = [10, 20, 30, 40, 50, 1, 2, 3, 4]  
 
     // d3.selectAll(".numbers")
@@ -49,17 +49,17 @@
 
     // li.exit.remove()
 
-    // bar-chart
+    // BAR - CHART
         
     let svgWidth = 500
     let svgHeight = 300
       
-    // the container
+    // THE CONTAINER
     let svg = d3.select("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight)
 
-    // scale
+    // SCALE
     let yScale = d3.scaleLinear()
       .domain([0, d3.max(arr)])
       .range([svgHeight, 0])
@@ -75,50 +75,67 @@
       .scale(yScale)
 
     svg.append('g')
-        .attr('transform', 'translate(50, 10)')
+        .attr('transform', 'translate(30, 10)')
         .call(yAxis)
 
     let xAxisTranslate = svgHeight - 20
 
     svg.append('g')
-        .attr('transform', `translate(50, ${xAxisTranslate})`)
+        .attr('transform', `translate(30, ${xAxisTranslate})`)
         .call(xAxis)
+
+    // SVG LINE & CIRCLE
+
+    let line = svg.append('line')
+      .attr('x1', 100)
+      .attr('x2', 450)
+      .attr('y1', 10)
+      .attr('y2', 10)
+      .attr('stroke', 'red')
+
+    let circle = svg.append('circle')
+      .attr('cx', 250)   //centerX
+      .attr('cy', 100)   //centerY
+      .attr('r', 50)
+      .attr('fill', 'blue')
 
     let barPadding = 5
     let barWidth = (svgWidth / arr.length)
     
-    // the bar
-    // let bar = svg.selectAll("rect")
-    //   .data(arr)
-    //   .enter()
-    //   .append("rect")
-    //   .attr("y", function (d) {
-    //     return svgHeight - yScale(d)
-    //   })
-    //   .attr("height", function (d) {
-    //     return yScale(d)
-    //   })
-    //   .attr("width", (barWidth - barPadding))
-    //   .attr("transform", function (d, i) {
-    //     let x = barWidth * i
-    //     return `translate (${x})`
-    //   })
+    // THE BAR
+    let bar = svg.selectAll("rect")
+      .data(arr)
+      .enter()
+      .append("rect")
+      .attr("y", function (d) {
+        // return svgHeight - yScale(d)
+        return svgHeight - (d) - 20
+      })
+      .attr("height", function (d) {
+        // return yScale(d)
+        return (d)
+      })
+      .attr("width", (barWidth - barPadding))
+      .attr("transform", function (d, i) {
+        let x = barWidth * i + 30
+        return `translate (${x})`
+      })
 
-    // label for bar
-    // let text = svg.selectAll('text')
-    //   .data(arr)
-    //   .enter()
-    //   .append('text')
-    //   .text((d) => {
-    //     return d
-    //   })
-    //   .attr('y', (d,i) => {
-    //     return svgHeight - d - 5
-    //   })
-    //   .attr('x', (d,i) => {
-    //     return barWidth * i + 10
-    //   })
-    //   .attr('fill', 'red')
+    // LABEL FOR BAR
+    let text = svg.selectAll('text')
+      .data(arr)
+      .enter()
+      .append('text')
+      .text((d) => {
+        return d
+      })
+      .attr('y', (d,i) => {
+        return svgHeight - d - 5
+      })
+      .attr('x', (d,i) => {
+        return barWidth * i + 10
+      })
+      .attr('fill', 'red')
 
   </script>
 </body>
