@@ -9,7 +9,7 @@
 </head>
 <style>
   .bar-chart {
-    background-color: aqua
+    background-color: yellow
   }
 </style>
 <body>
@@ -57,7 +57,6 @@
     let svg = d3.select("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight)
-      .attr("class", "bar-chart")
     
     let barPadding = 5
     let barWidth = (svgWidth / arr.length)
@@ -74,9 +73,24 @@
       })
       .attr("width", (barWidth - barPadding))
       .attr("transform", function (d, i) {
-        let translate = barWidth * i
-        return "translate ("+ translate +")"
+        let x = barWidth * i
+        return "translate ("+ x +")"
       })
+
+    let text = svg.selectAll('text')
+      .data(arr)
+      .enter()
+      .append('text')
+      .text((d) => {
+        return d
+      })
+      .attr('y', (d,i) => {
+        return svgHeight - d - 5
+      })
+      .attr('x', (d,i) => {
+        return barWidth * i + 10
+      })
+      .attr('fill', 'red')
 
   </script>
 </body>
