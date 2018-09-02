@@ -62,43 +62,63 @@
     // scale
     let yScale = d3.scaleLinear()
       .domain([0, d3.max(arr)])
-      .range([0, svgHeight])
-    
+      .range([svgHeight, 0])
+
+    let xScale = d3.scaleLinear()
+      .domain([0, d3.max(arr)])
+      .range([0, svgWidth])
+
+    let xAxis = d3.axisBottom()
+      .scale(xScale)
+
+    let yAxis = d3.axisLeft()
+      .scale(yScale)
+
+    svg.append('g')
+        .attr('transform', 'translate(50, 10)')
+        .call(yAxis)
+
+    let xAxisTranslate = svgHeight - 20
+
+    svg.append('g')
+        .attr('transform', `translate(50, ${xAxisTranslate})`)
+        .call(xAxis)
+
     let barPadding = 5
     let barWidth = (svgWidth / arr.length)
     
     // the bar
-    let bar = svg.selectAll("rect")
-      .data(arr)
-      .enter()
-      .append("rect")
-      .attr("y", function (d) {
-        return svgHeight - yScale(d)
-      })
-      .attr("height", function (d) {
-        return yScale(d)
-      })
-      .attr("width", (barWidth - barPadding))
-      .attr("transform", function (d, i) {
-        let x = barWidth * i
-        return "translate ("+ x +")"
-      })
+    // let bar = svg.selectAll("rect")
+    //   .data(arr)
+    //   .enter()
+    //   .append("rect")
+    //   .attr("y", function (d) {
+    //     return svgHeight - yScale(d)
+    //   })
+    //   .attr("height", function (d) {
+    //     return yScale(d)
+    //   })
+    //   .attr("width", (barWidth - barPadding))
+    //   .attr("transform", function (d, i) {
+    //     let x = barWidth * i
+    //     return `translate (${x})`
+    //   })
 
     // label for bar
-    let text = svg.selectAll('text')
-      .data(arr)
-      .enter()
-      .append('text')
-      .text((d) => {
-        return d
-      })
-      .attr('y', (d,i) => {
-        return svgHeight - d - 5
-      })
-      .attr('x', (d,i) => {
-        return barWidth * i + 10
-      })
-      .attr('fill', 'red')
+    // let text = svg.selectAll('text')
+    //   .data(arr)
+    //   .enter()
+    //   .append('text')
+    //   .text((d) => {
+    //     return d
+    //   })
+    //   .attr('y', (d,i) => {
+    //     return svgHeight - d - 5
+    //   })
+    //   .attr('x', (d,i) => {
+    //     return barWidth * i + 10
+    //   })
+    //   .attr('fill', 'red')
 
   </script>
 </body>
