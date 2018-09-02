@@ -7,22 +7,77 @@
   <title>D3 Visualization</title>
   <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
+<style>
+  .bar-chart {
+    background-color: aqua
+  }
+</style>
 <body>
+  
+  <p>LIST</p>
   <ul class="numbers">
-    <li></li>
-    <li></li>
-    <li></li>
   </ul>
 
+  <p>BAR CHART</p>
+
+  <svg class="bar-chart">
+  </svg>
 
   <script>
-    let arr = [0, 1, 2]  
 
-    d3.selectAll('.numbers li')
+    // list
+    let arr = [10, 20, 30, 40, 50, 1, 2, 3, 4]  
+
+    // d3.selectAll(".numbers li")
+    //   .data(arr)
+    //   .text((d) => {
+    //     return "Number: " + d
+    //   })
+
+    // let li = d3.select("body")
+    //   .selectAll("numbers")
+    //   .data(arr)
+    //     .text((d) => {
+    //       return "Number: " + d
+    //     })
+
+    // li.enter()
+    //   .append("li")
+    //   .text((d) => {
+    //       return "Number: " + d
+    //     })
+
+    // li.exit.remove()
+
+    // bar
+        
+    let svgWidth = 500
+    let svgHeight = 300
+      
+    let svg = d3.select("svg")
+      .attr("width", svgWidth)
+      .attr("height", svgHeight)
+      .attr("class", "bar-chart")
+    
+    let barPadding = 5
+    let barWidth = (svgWidth / arr.length)
+    
+    let bar = svg.selectAll("rect")
       .data(arr)
-      .text((d) => {
-        return 'Number: ' + d
+      .enter()
+      .append("rect")
+      .attr("y", function (d) {
+        return svgHeight - d
       })
+      .attr("height", function (d) {
+        return d
+      })
+      .attr("width", (barWidth - barPadding))
+      .attr("transform", function (d, i) {
+        let translate = barWidth * i
+        return "translate ("+ translate +")"
+      })
+
   </script>
 </body>
 </html>
