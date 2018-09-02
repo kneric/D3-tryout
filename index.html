@@ -14,62 +14,69 @@
 </style>
 <body>
   
-  <p>LIST</p>
-  <ul class="numbers">
-  </ul>
+  <div>
+    <p>LIST</p>
+    <ul class="numbers">
+    </ul>
+  </div>
 
-  <p>BAR CHART</p>
-
-  <svg class="bar-chart">
-  </svg>
+  <div>
+    <p>BAR CHART</p>
+  
+    <svg class="bar-chart">
+    </svg>
+  </div>
 
   <script>
 
-    // list
+    // item-list
     let arr = [10, 20, 30, 40, 50, 1, 2, 3, 4]  
 
-    // d3.selectAll(".numbers li")
+    // d3.selectAll(".numbers")
     //   .data(arr)
     //   .text((d) => {
     //     return "Number: " + d
     //   })
 
-    // let li = d3.select("body")
-    //   .selectAll("numbers")
-    //   .data(arr)
-    //     .text((d) => {
-    //       return "Number: " + d
-    //     })
-
-    // li.enter()
-    //   .append("li")
-    //   .text((d) => {
-    //       return "Number: " + d
-    //     })
+    let li = d3.select('ul')
+      .selectAll("li")
+      .data(arr)
+      .enter()
+      .append("li")
+      .text((d) => {
+          return "Number: " + d
+        })
 
     // li.exit.remove()
 
-    // bar
+    // bar-chart
         
     let svgWidth = 500
     let svgHeight = 300
       
+    // the container
     let svg = d3.select("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight)
+
+    // scale
+    let yScale = d3.scaleLinear()
+      .domain([0, d3.max(arr)])
+      .range([0, svgHeight])
     
     let barPadding = 5
     let barWidth = (svgWidth / arr.length)
     
+    // the bar
     let bar = svg.selectAll("rect")
       .data(arr)
       .enter()
       .append("rect")
       .attr("y", function (d) {
-        return svgHeight - d
+        return svgHeight - yScale(d)
       })
       .attr("height", function (d) {
-        return d
+        return yScale(d)
       })
       .attr("width", (barWidth - barPadding))
       .attr("transform", function (d, i) {
@@ -77,6 +84,7 @@
         return "translate ("+ x +")"
       })
 
+    // label for bar
     let text = svg.selectAll('text')
       .data(arr)
       .enter()
