@@ -5,44 +5,70 @@ let vRadius = Math.min(vWidth, vHeight) / 2;
 let vColor = d3.scaleOrdinal(d3.schemeCategory10);
 
 let vData = {
-  name: "Mobile Apps",
+  name: "App Store",
   children: [
     {
-      category: "Games",
-      children: [
-        {
-          name: "Pacman",
-          price: 50,
-          rating: 4,
-          popularity: 5000
-        },
-        {
-          name: "FF 7",
-          price: 10,
-          rating: 5,
-          popularity: 10000
-        }
-      ]
+      name: "Games",
+      children: []
     },
     {
-      category: "Apps",
-      children: [
-        {
-          name: "Evernote",
-          price: 5,
-          rating: 4.5,
-          popularity: 50000
-        },
-        {
-          name: "Alarm",
-          price: 0,
-          rating: 5,
-          popularity: 100000
-        }
-      ]
-    }
+      name: "Book",
+      children: []
+    },
+    {
+      name: "Business",
+      children: []
+    },
+    {
+      name: "Education",
+      children: []
+    },
+    {
+      name: "Entertainment",
+      children: []
+    },
+    {
+      name: "Finance",
+      children: []
+    },
+    {
+      name: "Lifestyle",
+      children: []
+    },
+    {
+      name: "Music",
+      children: []
+    },
+    {
+      name: "Productivity",
+      children: []
+    },
+    {
+      name: "Social Networking",
+      children: []
+    },
+    {
+      name: "Utilities",
+      children: []
+    },
   ]
 };
+
+d3.csv('AppleStore.csv')
+  .then((data) => {
+    data.forEach(app => {
+      let obj = {
+        name: app.track_name,
+        popularity: app.rating_count_tot
+      }
+      for(let i in vData.children){
+        if(app.prime_genre == vData.children[i].name){
+          vData.children[i].children.push(obj)
+        }
+      }
+    });
+    drawSunburst (vData)
+  })
 
 let g = d3.select('svg')
   .attr('width', vWidth)
@@ -67,24 +93,46 @@ let vArc = d3.arc()
     return d.y1
   })
 
-let vRoot = d3.hierarchy(vData)
+function drawSunburst (data) {
+  var vRoot = d3.hierarchy(vData)
   .sum((d) => {
     return d.popularity
   })
+  let vNodes = vRoot.descendants()
+  vLayout(vRoot)
+  
+  let vSlices = g.selectAll('g')
+    .data(vNodes)
+    .enter()
+    .append ('g')
+  
+  vSlices.append('path')
+    .attr('display', (d)=> {
+      return d.depth ? null : 'none'
+    })
+    .attr('d', vArc)
+    .style('stroke', '#fff')
+    .style('fill', (d) => {
+      return vColor((d.children ? d : d.parent).data.name)
+    })
+  
+  vSlices.append('text')
+    .filter((d) => {
+      return d.parent
+    })
+    .attr('transform', (d) => {
+      return `translate(${vArc.centroid(d)})rotate(${textRotation(d)})`
+    })
+    .attr('dx', '-20')
+    .attr('dy', '.5em')
+    .text((d) => {
+      return d.data.name
+    })
+}
 
-let vNodes = vRoot.descendants()
-vLayout(vRoot)
+function textRotation(d){
+  let angle = (d.x0 + d.x1) / Math.PI * 90
 
-let vSlices = g.selectAll('path')
-  .data(vNodes)
-  .enter()
-  .append ('path')
-
-vSlices.filter((d) => {
-  return d.parent
-})
-  .attr('d', vArc)
-  .style('stroke', '#fff')
-  .style('fill', (d) => {
-    return vColor((d.children ? d : d.parent).data.name)
-  })
+  // prevent upside-down text
+  return (angle < 90 || angle > 270) ? angle : angle + 180
+}
